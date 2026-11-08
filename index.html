@@ -3144,7 +3144,7 @@ function settingsHtml() {
 
 <script>
 /* ===== EP SIGN-IN (Google ID token, verified on the server) ===== */
-window.EP_VERSION = 'v4';
+window.EP_VERSION = 'v4.1';
 window.EP_CONFIG = window.EP_CONFIG || { scriptUrl: 'https://script.google.com/macros/s/AKfycbzJpjeZ_neOsexRvjZCfTTegL7VqdVpBSBOPqaT6e5eCS7TPPPPo-LqqoDRTVI8Aw_vzQ/exec', clientId: '418493406070-4annbl5va53f8rthn559r0embsmih0pq.apps.googleusercontent.com' };   /* filled in for the hosted copy */
 (function () {
   'use strict';
@@ -3174,7 +3174,7 @@ window.EP_CONFIG = window.EP_CONFIG || { scriptUrl: 'https://script.google.com/m
     var b = {}; for (var k in body) b[k] = body[k]; b.idToken = token();
     return fetch(cfg().scriptUrl, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b), signal: ctl ? ctl.signal : undefined })
       .then(function (r) { clearTimeout(to); return r.text(); })
-      .then(function (t) { try { return JSON.parse(t); } catch (e) { throw new Error('ഷീറ്റിൽ നിന്ന് ശരിയായ മറുപടി കിട്ടിയില്ല'); } })
+      .then(function (t) { try { return JSON.parse(t); } catch (e) { throw new Error('മറുപടി JSON അല്ല: ' + String(t).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 180)); } })
       .catch(function (e) { clearTimeout(to); throw e; });
   }
 
@@ -3226,7 +3226,7 @@ window.EP_CONFIG = window.EP_CONFIG || { scriptUrl: 'https://script.google.com/m
     call({ action: 'me' }).then(function (r) {
       if (r.ok) { setMe(r.me); hideGate(); if (window.EPSYNC) EPSYNC.kick(); }
       else handleErr(r);
-    }).catch(function () { msg('സെർവറിൽ എത്താനായില്ല. ഇന്റർനെറ്റും URL-ഉം പരിശോധിക്കുക.', true); });
+    }).catch(function (e) { msg('സെർവറിൽ എത്താനായില്ല. ഇന്റർനെറ്റും URL-ഉം പരിശോധിക്കുക.  [കാരണം: ' + ((e && (e.name + ': ' + e.message)) || e) + ']', true); });
   }
   function handleErr(r) {
     if (r.error === 'noaccess') return denied(r.email);
