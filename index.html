@@ -3144,7 +3144,7 @@ function settingsHtml() {
 
 <script>
 /* ===== EP SIGN-IN (Google ID token, verified on the server) ===== */
-window.EP_VERSION = 'v4.1';
+window.EP_VERSION = 'v4.2';
 window.EP_CONFIG = window.EP_CONFIG || { scriptUrl: 'https://script.google.com/macros/s/AKfycbzJpjeZ_neOsexRvjZCfTTegL7VqdVpBSBOPqaT6e5eCS7TPPPPo-LqqoDRTVI8Aw_vzQ/exec', clientId: '418493406070-4annbl5va53f8rthn559r0embsmih0pq.apps.googleusercontent.com' };   /* filled in for the hosted copy */
 (function () {
   'use strict';
@@ -3221,12 +3221,20 @@ window.EP_CONFIG = window.EP_CONFIG || { scriptUrl: 'https://script.google.com/m
     if (S.me && $('epLogin') && $('epLogin').style.display !== 'flex') { if (window.EPSYNC) EPSYNC.kick(); return; }   /* silent refresh */
     verify();
   }
+  function probe() {
+    var u = cfg().scriptUrl, out = [];
+    function rd(tag) { return function (r) { return r.text().then(function (t) { out.push(tag + ' ' + r.status + ' ' + String(t).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 70)); }); }; }
+    function fl(tag) { return function (e) { out.push(tag + ' FAIL ' + (e && e.message)); }; }
+    return fetch(u).then(rd('GET')).catch(fl('GET'))
+      .then(function () { return fetch(u, { method: 'POST', body: JSON.stringify({ action: 'me', idToken: 'probe' }) }).then(rd('POST')).catch(fl('POST')); })
+      .then(function () { return out.join(' | '); });
+  }
   function verify() {
     msg('പരിശോധിക്കുന്നു…');
     call({ action: 'me' }).then(function (r) {
       if (r.ok) { setMe(r.me); hideGate(); if (window.EPSYNC) EPSYNC.kick(); }
       else handleErr(r);
-    }).catch(function (e) { msg('സെർവറിൽ എത്താനായില്ല. ഇന്റർനെറ്റും URL-ഉം പരിശോധിക്കുക.  [കാരണം: ' + ((e && (e.name + ': ' + e.message)) || e) + ']', true); });
+    }).catch(function (e) { var base = 'സെർവറിൽ എത്താനായില്ല [കാരണം: ' + ((e && (e.name + ': ' + e.message)) || e) + ']'; msg(base + ' … പരിശോധിക്കുന്നു', true); probe().then(function (t) { msg(base + '  ടെസ്റ്റ്: ' + t, true); }); });
   }
   function handleErr(r) {
     if (r.error === 'noaccess') return denied(r.email);
