@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ml"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>EP ഓർഡർ പേജ്</title>
+<meta name="robots" content="noindex">
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;600;800&family=Inter:wght@400;600;800&display=swap">
+<style>
+/* Layout: one column, search on top, product list, sticky cart bar, order form as second view */
+:root{
+  --bg:#f6f8f5; --card:#ffffff; --fg:#14231a; --muted:#5b6b60; --line:#dbe3dc;
+  --accent:#15803d; --accent-fg:#ffffff; --warn-bg:#fff4d6; --warn-fg:#6b4a00; --off:#9aa59d;
+  --font:'Noto Sans Malayalam','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1a13; --card:#16251b; --fg:#e7f1ea; --muted:#9db0a3; --line:#27402f;
+  --accent:#4ade80; --accent-fg:#06210f; --warn-bg:#3a2f0b; --warn-fg:#f5d88a; --off:#6a7a70; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1a13; --card:#16251b; --fg:#e7f1ea; --muted:#9db0a3; --line:#27402f;
+  --accent:#4ade80; --accent-fg:#06210f; --warn-bg:#3a2f0b; --warn-fg:#f5d88a; --off:#6a7a70; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.45;
+  padding-block:0 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:640px;margin:0 auto}
+header{padding-block:16px 8px}
+h1{font-size:1.3rem;margin:0;font-weight:800;text-wrap:balance}
+.sub{color:var(--muted);font-size:.85rem;margin-top:2px}
+.test{background:var(--warn-bg);color:var(--warn-fg);border-radius:8px;padding:8px 10px;font-size:.8rem;margin-top:10px}
+.search{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:8px;z-index:5}
+.search input{width:100%;font:inherit;padding:12px 14px;border:2px solid var(--accent);border-radius:10px;background:var(--card);color:var(--fg)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-block:8px 4px;scrollbar-width:none}
+.chip{flex:0 0 auto;font:inherit;font-size:.8rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);border-color:var(--accent);font-weight:600}
+ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+li.item{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.nm{font-weight:600;overflow-wrap:anywhere}
+.en{color:var(--muted);font-size:.78rem;font-weight:400}
+.pr{color:var(--muted);font-size:.85rem;font-variant-numeric:tabular-nums}
+.add{font:inherit;font-weight:600;padding:8px 14px;border-radius:8px;border:none;background:var(--accent);color:var(--accent-fg);cursor:pointer}
+.step{display:flex;align-items:center;gap:6px}
+.step button{font:inherit;font-weight:800;width:36px;height:36px;border-radius:8px;border:1px solid var(--accent);background:var(--card);color:var(--accent);cursor:pointer;font-size:1.1rem}
+.step span{min-width:60px;text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
+li.off .nm,li.off .pr{color:var(--off)} li.off .add{background:var(--line);color:var(--off);cursor:not-allowed}
+.opts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;padding-top:6px;border-top:1px dashed var(--line);margin-top:4px}
+.opts button{font:inherit;font-size:.85rem;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid var(--accent);background:var(--card);color:var(--accent);cursor:pointer}
+.opts .lab{flex-basis:100%;font-size:.78rem;color:var(--muted)}
+.gin{width:84px;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);text-align:right;margin-top:6px}
+.empty{color:var(--muted);padding:20px 0;text-align:center}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:var(--card);border-top:1px solid var(--line);z-index:10}
+.bar button{display:flex;width:100%;max-width:640px;margin:0 auto;justify-content:space-between;font:inherit;font-weight:800;padding:14px 16px;border-radius:12px;border:none;background:var(--accent);color:var(--accent-fg);font-size:1rem;cursor:pointer}
+.bar button:disabled{background:var(--line);color:var(--off)}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
+.sec h2{font-size:1rem;margin:0 0 8px}
+.row{display:flex;justify-content:space-between;gap:10px;padding-block:8px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.tot{display:flex;justify-content:space-between;font-weight:800;font-size:1.1rem;padding-top:10px}
+label{display:block;font-size:.85rem;font-weight:600;margin:10px 0 4px}
+input.f,textarea.f{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+.err{color:#b42318;font-size:.8rem;min-height:1.1em}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .err{color:#fca5a5}}
+:root[data-theme="dark"] .err{color:#fca5a5}
+.btn{display:block;width:100%;text-align:center;font:inherit;font-weight:800;padding:14px;border-radius:12px;border:none;margin-top:12px;cursor:pointer;text-decoration:none}
+.btn.main{background:var(--accent);color:var(--accent-fg)}
+.btn.alt{background:transparent;color:var(--fg);border:1px solid var(--line);font-weight:600}
+.btn.disabled{background:var(--line);color:var(--off);pointer-events:none}
+.back{font:inherit;background:none;border:none;color:var(--accent);font-weight:600;padding:12px 0;cursor:pointer}
+pre.msg{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;font:inherit;font-size:.82rem;margin:8px 0 0;max-height:220px;overflow:auto}
+.note{color:var(--muted);font-size:.8rem;margin-top:8px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+</style>
+
+</head><body>
+<div class="wrap">
+ <div id="vShop">
+  <header>
+   <h1>EP സൂപ്പർമാർക്കറ്റ്, കുന്നംകുളം</h1>
+   <div class="sub">സാധനം തിരഞ്ഞ് തൊട്ടാൽ ഓർഡറിൽ ചേരും. ഓർഡർ WhatsApp-ൽ കടയിലേക്ക് പോകും.</div>
+   <div class="test">ടെസ്റ്റ് പേജ്: ഇവിടെ കാണുന്ന വിലകൾ ഏകദേശ ടെസ്റ്റ് വിലകളാണ്. ശരിക്കുള്ള വില കടയിൽ ഉറപ്പിക്കും.</div>
+  </header>
+  <div class="search">
+   <input id="q" type="search" autocomplete="off" placeholder="🔍 സാധനം തിരയുക (ഉദാ: ari, savala, ഉള്ളി)" aria-label="സാധനം തിരയുക">
+   <div class="chips" id="chips" role="group" aria-label="വിഭാഗം"></div>
+  </div>
+  <ul id="list"></ul>
+  <div class="empty" id="none" hidden>ഒന്നും കണ്ടില്ല. വേറെ പേരിൽ തിരയൂ, അല്ലെങ്കിൽ ഓർഡറിൻ്റെ കുറിപ്പിൽ എഴുതാം.</div>
+ </div>
+
+ <div id="vCart" hidden>
+  <button class="back" id="back" type="button">← സാധനങ്ങളിലേക്ക് മടങ്ങുക</button>
+  <div class="sec"><h2>നിങ്ങളുടെ ഓർഡർ</h2><div id="cartRows"></div>
+   <div class="tot"><span>ഏകദേശ ആകെ</span><span id="cartTot">₹0</span></div>
+   <div class="note">തൂക്കം/എണ്ണം അനുസരിച്ച് അവസാന തുക മാറാം. ഡെലിവറി ചാർജ് കട അറിയിക്കും.</div>
+  </div>
+  <div class="sec"><h2>വിവരങ്ങൾ</h2>
+   <label for="nm">പേര്</label><input class="f" id="nm" autocomplete="name">
+   <label for="ph">ഫോൺ നമ്പർ (10 അക്കം)</label><input class="f" id="ph" inputmode="numeric" maxlength="14" autocomplete="tel">
+   <label for="ad">വിലാസം / ലാൻഡ്‌മാർക്ക്</label><textarea class="f" id="ad" rows="3" autocomplete="street-address"></textarea>
+   <label for="nt">കുറിപ്പ് (ഉണ്ടെങ്കിൽ)</label><textarea class="f" id="nt" rows="2" placeholder="ഉദാ: ലിസ്റ്റിൽ ഇല്ലാത്ത സാധനം, സമയം"></textarea>
+   <div class="err" id="err" role="alert"></div>
+  </div>
+  <div class="sec"><h2>സന്ദേശം</h2><pre class="msg" id="msg"></pre></div>
+  <a class="btn main disabled" id="send" href="#" target="_blank" rel="noopener">WhatsApp-ൽ ഓർഡർ അയക്കുക</a>
+  <button class="btn alt" id="copy" type="button">സന്ദേശം കോപ്പി ചെയ്യുക</button>
+  <div class="note">WhatsApp തുറന്ന് "അയക്കുക" അമർത്തിയാലേ ഓർഡർ കടയിൽ എത്തൂ. തുറന്നില്ലെങ്കിൽ സന്ദേശം കോപ്പി ചെയ്ത് <b id="shopNo"></b> എന്ന നമ്പറിലേക്ക് അയക്കാം.</div>
+ </div>
+</div>
+
+<div class="bar" id="bar"><button id="goCart" type="button" disabled><span id="barL">കാർട്ട് ശൂന്യം</span><span id="barR"></span></button></div>
+
+<script>
+/* ---- config: change here ---- */
+var SHOP_WA='919846344444', SHOP_NAME='EP സൂപ്പർമാർക്കറ്റ്';
+var CATALOG=[{"c":"P001","m":"മട്ട അരി","e":"Matta rice","u":"kg","p":58,"al":"matta ari, matta rice, red rice","g":"അരി / ധാന്യം","w":1,"pk":58},{"c":"P002","m":"ജയ അരി","e":"Jaya rice","u":"kg","p":50,"al":"jaya ari","g":"അരി / ധാന്യം","w":1,"pk":50},{"c":"P003","m":"പച്ചരി","e":"Raw rice","u":"kg","p":46,"al":"pachari, pachcha ari","g":"അരി / ധാന്യം","w":1,"pk":46},{"c":"P004","m":"പുഴുക്കലരി","e":"Boiled rice","u":"kg","p":48,"al":"puzhukkalari, kuthari","g":"അരി / ധാന്യം","w":1,"pk":48},{"c":"P005","m":"ബസ്മതി അരി","e":"Basmati rice","u":"kg","p":130,"al":"basmati, biriyani ari","g":"അരി / ധാന്യം","w":1,"pk":130},{"c":"P006","m":"ജീരകശാല അരി","e":"Jeerakasala rice","u":"kg","p":140,"al":"jeerakasala, kaima","g":"അരി / ധാന്യം","w":1,"pk":140},{"c":"P007","m":"ഇഡ്ഡലി അരി","e":"Idli rice","u":"kg","p":48,"al":"idli ari","g":"അരി / ധാന്യം","w":1,"pk":48},{"c":"P008","m":"അവൽ","e":"Poha","u":"500 g","p":45,"al":"aval, poha","g":"അരി / ധാന്യം","w":1,"pk":90.0},{"c":"P009","m":"റവ","e":"Semolina","u":"kg","p":52,"al":"rava, sooji","g":"അരി / ധാന്യം","w":1,"pk":52},{"c":"P010","m":"ഗോതമ്പ് പൊടി (ആട്ട)","e":"Wheat flour (atta)","u":"kg","p":48,"al":"atta, gothambu podi","g":"അരി / ധാന്യം","w":1,"pk":48},{"c":"P011","m":"മൈദ","e":"Maida","u":"kg","p":45,"al":"maida","g":"അരി / ധാന്യം","w":1,"pk":45},{"c":"P012","m":"അരിപ്പൊടി","e":"Rice flour","u":"kg","p":60,"al":"ari podi","g":"അരി / ധാന്യം","w":1,"pk":60},{"c":"P013","m":"പുട്ടുപൊടി","e":"Puttu podi","u":"kg","p":70,"al":"puttu podi, puttupodi","g":"അരി / ധാന്യം","w":1,"pk":70},{"c":"P014","m":"ഇടിയപ്പം പൊടി","e":"Idiyappam podi","u":"kg","p":65,"al":"idiyappam podi","g":"അരി / ധാന്യം","w":1,"pk":65},{"c":"P015","m":"റാഗി പൊടി","e":"Ragi flour","u":"500 g","p":50,"al":"ragi, ragi podi","g":"അരി / ധാന്യം","w":1,"pk":100.0},{"c":"P016","m":"ഓട്സ്","e":"Oats","u":"500 g","p":105,"al":"oats","g":"അരി / ധാന്യം"},{"c":"P017","m":"സേമിയ","e":"Vermicelli","u":"400 g","p":52,"al":"semiya, vermicelli","g":"അരി / ധാന്യം"},{"c":"P018","m":"തുവരപ്പരിപ്പ്","e":"Toor dal","u":"kg","p":160,"al":"thuvara parippu, toor dal","g":"പയർ / പരിപ്പ്","w":1,"pk":160},{"c":"P019","m":"ചെറുപയർ","e":"Green gram (whole)","u":"kg","p":130,"al":"cherupayar, green gram","g":"പയർ / പരിപ്പ്","w":1,"pk":130},{"c":"P020","m":"ചെറുപയർ പരിപ്പ്","e":"Moong dal","u":"kg","p":125,"al":"cherupayar parippu, moong dal","g":"പയർ / പരിപ്പ്","w":1,"pk":125},{"c":"P021","m":"ഉഴുന്ന്","e":"Urad dal","u":"kg","p":135,"al":"uzhunnu, urad dal","g":"പയർ / പരിപ്പ്","w":1,"pk":135},{"c":"P022","m":"കടല പരിപ്പ്","e":"Chana dal","u":"kg","p":95,"al":"kadala parippu, chana dal","g":"പയർ / പരിപ്പ്","w":1,"pk":95},{"c":"P023","m":"വൻപയർ","e":"Cowpea","u":"kg","p":110,"al":"vanpayar, cowpea","g":"പയർ / പരിപ്പ്","w":1,"pk":110},{"c":"P024","m":"കടല (കറുത്ത)","e":"Black chickpea","u":"kg","p":100,"al":"kadala, black chana","g":"പയർ / പരിപ്പ്","w":1,"pk":100},{"c":"P025","m":"വെള്ള കടല","e":"White chickpea","u":"kg","p":140,"al":"vella kadala, chole, kabuli","g":"പയർ / പരിപ്പ്","w":1,"pk":140},{"c":"P026","m":"ഉണക്ക പട്ടാണി","e":"Dried green peas","u":"kg","p":95,"al":"pattani, dried peas","g":"പയർ / പരിപ്പ്","w":1,"pk":95},{"c":"P027","m":"രാജ്മ","e":"Rajma","u":"kg","p":160,"al":"rajma","g":"പയർ / പരിപ്പ്","w":1,"pk":160},{"c":"P028","m":"കപ്പലണ്ടി","e":"Peanut","u":"500 g","p":85,"al":"kappalandi, groundnut","g":"പയർ / പരിപ്പ്","w":1,"pk":170.0},{"c":"P029","m":"വെളിച്ചെണ്ണ","e":"Coconut oil","u":"L","p":470,"al":"velichenna, coconut oil","g":"എണ്ണ / നെയ്യ്"},{"c":"P030","m":"വെളിച്ചെണ്ണ (അര ലിറ്റർ)","e":"Coconut oil","u":"500 ml","p":240,"al":"velichenna ara litre","g":"എണ്ണ / നെയ്യ്"},{"c":"P031","m":"സൺഫ്ലവർ ഓയിൽ","e":"Sunflower oil","u":"L","p":140,"al":"sunflower oil","g":"എണ്ണ / നെയ്യ്"},{"c":"P032","m":"റൈസ് ബ്രാൻ ഓയിൽ","e":"Rice bran oil","u":"L","p":150,"al":"rice bran oil","g":"എണ്ണ / നെയ്യ്"},{"c":"P033","m":"നല്ലെണ്ണ","e":"Gingelly oil","u":"L","p":380,"al":"nallenna, ellenna, sesame oil","g":"എണ്ണ / നെയ്യ്"},{"c":"P034","m":"നെയ്യ്","e":"Ghee","u":"500 ml","p":330,"al":"ney, ghee","g":"എണ്ണ / നെയ്യ്"},{"c":"P035","m":"പഞ്ചസാര","e":"Sugar","u":"kg","p":46,"al":"panchasara, sugar","g":"മധുരം / ചായ / കാപ്പി"},{"c":"P036","m":"ശർക്കര","e":"Jaggery","u":"kg","p":85,"al":"sarkkara, jaggery","g":"മധുരം / ചായ / കാപ്പി"},{"c":"P037","m":"ഉപ്പ്","e":"Salt","u":"kg","p":22,"al":"uppu, salt","g":"മധുരം / ചായ / കാപ്പി"},{"c":"P038","m":"തേൻ","e":"Honey","u":"250 g","p":130,"al":"then, honey","g":"മധുരം / ചായ / കാപ്പി"},{"c":"P039","m":"ചായപ്പൊടി","e":"Tea powder","u":"250 g","p":110,"al":"chaya podi, tea","g":"മധുരം / ചായ / കാപ്പി"},{"c":"P040","m":"കാപ്പിപ്പൊടി","e":"Coffee powder","u":"200 g","p":120,"al":"kappi podi, coffee","g":"മധുരം / ചായ / കാപ്പി"},{"c":"P041","m":"ഹോർലിക്സ്","e":"Horlicks","u":"500 g","p":290,"al":"horlicks","g":"മധുരം / ചായ / കാപ്പി"},{"c":"P042","m":"ബൂസ്റ്റ്","e":"Boost","u":"500 g","p":285,"al":"boost","g":"മധുരം / ചായ / കാപ്പി"},{"c":"P043","m":"പാൽപ്പൊടി","e":"Milk powder","u":"200 g","p":130,"al":"paalppodi, milk powder","g":"മധുരം / ചായ / കാപ്പി"},{"c":"P044","m":"മുളകുപൊടി","e":"Chilli powder","u":"100 g","p":45,"al":"mulaku podi, chilli powder","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":450.0},{"c":"P045","m":"മല്ലിപ്പൊടി","e":"Coriander powder","u":"100 g","p":30,"al":"malli podi, coriander powder","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":300.0},{"c":"P046","m":"മഞ്ഞൾപ്പൊടി","e":"Turmeric powder","u":"100 g","p":32,"al":"manjal podi, turmeric","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":320.0},{"c":"P047","m":"ഗരം മസാല","e":"Garam masala","u":"100 g","p":70,"al":"garam masala","g":"മസാല / സുഗന്ധവ്യഞ്ജനം"},{"c":"P048","m":"സാമ്പാർ പൊടി","e":"Sambar powder","u":"100 g","p":45,"al":"sambar podi","g":"മസാല / സുഗന്ധവ്യഞ്ജനം"},{"c":"P049","m":"ചിക്കൻ മസാല","e":"Chicken masala","u":"100 g","p":60,"al":"chicken masala","g":"മസാല / സുഗന്ധവ്യഞ്ജനം"},{"c":"P050","m":"മീൻ മസാല","e":"Fish masala","u":"100 g","p":55,"al":"meen masala, fish masala","g":"മസാല / സുഗന്ധവ്യഞ്ജനം"},{"c":"P051","m":"കുരുമുളക്","e":"Black pepper","u":"100 g","p":80,"al":"kurumulaku, pepper","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":800.0},{"c":"P052","m":"ഏലക്ക","e":"Cardamom","u":"50 g","p":125,"al":"elakka, cardamom","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":2500.0},{"c":"P053","m":"ഗ്രാമ്പൂ","e":"Cloves","u":"50 g","p":90,"al":"grambu, cloves","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":1800.0},{"c":"P054","m":"കറുവപ്പട്ട","e":"Cinnamon","u":"50 g","p":45,"al":"karuvapatta, cinnamon","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":900.0},{"c":"P055","m":"ജീരകം","e":"Cumin","u":"100 g","p":60,"al":"jeerakam, cumin","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":600.0},{"c":"P056","m":"പെരുംജീരകം","e":"Fennel seeds","u":"100 g","p":35,"al":"perumjeerakam, fennel","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":350.0},{"c":"P057","m":"കടുക്","e":"Mustard seeds","u":"100 g","p":22,"al":"kadugu, mustard","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":220.0},{"c":"P058","m":"ഉലുവ","e":"Fenugreek","u":"100 g","p":20,"al":"uluva, fenugreek","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":200.0},{"c":"P059","m":"വറ്റൽമുളക്","e":"Dry red chilli","u":"100 g","p":50,"al":"vattal mulaku, dry chilli","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":500.0},{"c":"P060","m":"പുളി","e":"Tamarind","u":"100 g","p":30,"al":"puli, tamarind","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":300.0},{"c":"P061","m":"കുടംപുളി","e":"Kudampuli","u":"100 g","p":55,"al":"kudampuli, gambooge","g":"മസാല / സുഗന്ധവ്യഞ്ജനം","w":1,"pk":550.0},{"c":"P062","m":"കായം","e":"Asafoetida","u":"50 g","p":70,"al":"kayam, hing","g":"മസാല / സുഗന്ധവ്യഞ്ജനം"},{"c":"P063","m":"സവാള","e":"Onion","u":"kg","p":40,"al":"savala, onion","g":"പച്ചക്കറി","w":1,"pk":40},{"c":"P064","m":"ചെറിയ ഉള്ളി","e":"Shallots","u":"kg","p":90,"al":"cheriya ulli, small onion","g":"പച്ചക്കറി","w":1,"pk":90},{"c":"P065","m":"തക്കാളി","e":"Tomato","u":"kg","p":40,"al":"thakkali, tomato","g":"പച്ചക്കറി","w":1,"pk":40},{"c":"P066","m":"ഉരുളക്കിഴങ്ങ്","e":"Potato","u":"kg","p":38,"al":"urulakizhangu, potato","g":"പച്ചക്കറി","w":1,"pk":38},{"c":"P067","m":"വെളുത്തുള്ളി","e":"Garlic","u":"kg","p":220,"al":"vellulli, garlic","g":"പച്ചക്കറി","w":1,"pk":220},{"c":"P068","m":"ഇഞ്ചി","e":"Ginger","u":"kg","p":120,"al":"inji, ginger","g":"പച്ചക്കറി","w":1,"pk":120},{"c":"P069","m":"പച്ചമുളക്","e":"Green chilli","u":"kg","p":80,"al":"pachamulaku, green chilli","g":"പച്ചക്കറി","w":1,"pk":80},{"c":"P070","m":"കാരറ്റ്","e":"Carrot","u":"kg","p":55,"al":"carrot","g":"പച്ചക്കറി","w":1,"pk":55},{"c":"P071","m":"ബീറ്റ്റൂട്ട്","e":"Beetroot","u":"kg","p":50,"al":"beetroot","g":"പച്ചക്കറി","w":1,"pk":50},{"c":"P072","m":"കാബേജ്","e":"Cabbage","u":"kg","p":35,"al":"cabbage","g":"പച്ചക്കറി","w":1,"pk":35},{"c":"P073","m":"വെണ്ടക്ക","e":"Ladies finger","u":"kg","p":60,"al":"vendakka, okra","g":"പച്ചക്കറി","w":1,"pk":60},{"c":"P074","m":"വഴുതനങ്ങ","e":"Brinjal","u":"kg","p":55,"al":"vazhuthananga, brinjal","g":"പച്ചക്കറി","w":1,"pk":55},{"c":"P075","m":"ബീൻസ്","e":"Beans","u":"kg","p":70,"al":"beans, payar","g":"പച്ചക്കറി","w":1,"pk":70},{"c":"P076","m":"അമരയ്ക്ക","e":"Broad beans","u":"kg","p":70,"al":"amarakka","g":"പച്ചക്കറി","w":1,"pk":70},{"c":"P077","m":"പാവയ്ക്ക","e":"Bitter gourd","u":"kg","p":65,"al":"pavakka","g":"പച്ചക്കറി","w":1,"pk":65},{"c":"P078","m":"പടവലങ്ങ","e":"Snake gourd","u":"kg","p":55,"al":"padavalanga","g":"പച്ചക്കറി","w":1,"pk":55},{"c":"P079","m":"വെള്ളരി","e":"Cucumber","u":"kg","p":40,"al":"vellari, cucumber","g":"പച്ചക്കറി","w":1,"pk":40},{"c":"P080","m":"മത്തങ്ങ","e":"Pumpkin","u":"kg","p":35,"al":"mathanga, pumpkin","g":"പച്ചക്കറി","w":1,"pk":35},{"c":"P081","m":"കുമ്പളങ്ങ","e":"Ash gourd","u":"kg","p":35,"al":"kumbalanga","g":"പച്ചക്കറി","w":1,"pk":35},{"c":"P082","m":"ചേന","e":"Elephant foot yam","u":"kg","p":70,"al":"chena","g":"പച്ചക്കറി","w":1,"pk":70},{"c":"P083","m":"ചേമ്പ്","e":"Colocasia","u":"kg","p":80,"al":"chembu","g":"പച്ചക്കറി","w":1,"pk":80},{"c":"P084","m":"കപ്പ","e":"Tapioca","u":"kg","p":40,"al":"kappa, maracheeni, tapioca","g":"പച്ചക്കറി","w":1,"pk":40},{"c":"P085","m":"നേന്ത്രക്കായ","e":"Raw plantain","u":"kg","p":55,"al":"nenthrakkaya, raw banana","g":"പച്ചക്കറി","w":1,"pk":55},{"c":"P086","m":"മുരിങ്ങക്ക","e":"Drumstick","u":"kg","p":90,"al":"muringakka, drumstick","g":"പച്ചക്കറി","w":1,"pk":90},{"c":"P087","m":"കോവയ്ക്ക","e":"Ivy gourd","u":"kg","p":55,"al":"kovakka","g":"പച്ചക്കറി","w":1,"pk":55},{"c":"P088","m":"ചീര","e":"Spinach","u":"bunch","p":20,"al":"cheera, spinach","g":"പച്ചക്കറി"},{"c":"P089","m":"കറിവേപ്പില","e":"Curry leaves","u":"bunch","p":10,"al":"karivepila, curry leaves","g":"പച്ചക്കറി"},{"c":"P090","m":"മല്ലിയില","e":"Coriander leaves","u":"bunch","p":15,"al":"malliyila, coriander leaves","g":"പച്ചക്കറി"},{"c":"P091","m":"തേങ്ങ","e":"Coconut","u":"each","p":55,"al":"thenga, coconut","g":"പച്ചക്കറി"},{"c":"P092","m":"ചെറുനാരങ്ങ","e":"Lemon","u":"each","p":6,"al":"cherunaranga, lemon, naranga","g":"പച്ചക്കറി"},{"c":"P093","m":"നേന്ത്രപ്പഴം","e":"Banana (nendran)","u":"kg","p":60,"al":"nenthrapazham, nendran","g":"പഴം","w":1,"pk":60},{"c":"P094","m":"പൂവൻപഴം","e":"Poovan banana","u":"kg","p":55,"al":"poovanpazham, poovan","g":"പഴം","w":1,"pk":55},{"c":"P095","m":"റോബസ്റ്റ പഴം","e":"Robusta banana","u":"kg","p":50,"al":"robusta, pazham","g":"പഴം","w":1,"pk":50},{"c":"P096","m":"ആപ്പിൾ","e":"Apple","u":"kg","p":190,"al":"apple","g":"പഴം","w":1,"pk":190},{"c":"P097","m":"ഓറഞ്ച്","e":"Orange","u":"kg","p":100,"al":"orange","g":"പഴം","w":1,"pk":100},{"c":"P098","m":"മുന്തിരി","e":"Grapes","u":"kg","p":110,"al":"munthiri, grapes","g":"പഴം","w":1,"pk":110},{"c":"P099","m":"മാതളം","e":"Pomegranate","u":"kg","p":180,"al":"mathalam, pomegranate, anar","g":"പഴം","w":1,"pk":180},{"c":"P100","m":"പപ്പായ","e":"Papaya","u":"kg","p":40,"al":"papaya, karmoos","g":"പഴം","w":1,"pk":40},{"c":"P101","m":"പൈനാപ്പിൾ","e":"Pineapple","u":"each","p":60,"al":"pineapple, kaithachakka","g":"പഴം"},{"c":"P102","m":"തണ്ണിമത്തൻ","e":"Watermelon","u":"kg","p":30,"al":"thannimathan, watermelon","g":"പഴം","w":1,"pk":30},{"c":"P103","m":"പാൽ (മിൽമ)","e":"Milk (Milma)","u":"500 ml","p":30,"al":"milma, paal, milk","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P104","m":"പാൽ (ലിറ്റർ)","e":"Milk","u":"L","p":56,"al":"paal litre, milk 1 litre","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P105","m":"തൈര്","e":"Curd","u":"500 g","p":35,"al":"thairu, curd","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P106","m":"മോര്","e":"Buttermilk","u":"200 ml","p":15,"al":"moru, buttermilk","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P107","m":"ബട്ടർ","e":"Butter","u":"100 g","p":62,"al":"butter","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P108","m":"പനീർ","e":"Paneer","u":"200 g","p":90,"al":"paneer","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P109","m":"ചീസ് സ്ലൈസ്","e":"Cheese slices","u":"200 g","p":140,"al":"cheese","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P110","m":"കണ്ടൻസ്ഡ് മിൽക്ക്","e":"Condensed milk","u":"400 g","p":130,"al":"condensed milk","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P111","m":"മുട്ട","e":"Egg","u":"each","p":7,"al":"mutta, egg","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P112","m":"മുട്ട (30 എണ്ണം ട്രേ)","e":"Egg tray","u":"30 pcs","p":200,"al":"mutta tray, egg tray","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P113","m":"ദോശ മാവ്","e":"Dosa batter","u":"500 g","p":40,"al":"dosa mavu, dosa batter","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P114","m":"ഇഡ്ഡലി മാവ്","e":"Idli batter","u":"500 g","p":40,"al":"idli mavu, idli batter","g":"പാൽ / മുട്ട / പാലുൽപ്പന്നം"},{"c":"P115","m":"ബ്രെഡ്","e":"Bread","u":"400 g","p":40,"al":"bread","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P116","m":"ബണ്ണ്","e":"Bun","u":"each","p":15,"al":"bun","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P117","m":"റസ്ക്","e":"Rusk","u":"pack","p":40,"al":"rusk","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P118","m":"പാർലെ-ജി ബിസ്കറ്റ്","e":"Parle-G","u":"pack","p":10,"al":"parle g, biscuit","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P119","m":"മരിയ ബിസ്കറ്റ്","e":"Marie biscuit","u":"pack","p":35,"al":"marie, biscuit","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P120","m":"ഗുഡ് ഡേ ബിസ്കറ്റ്","e":"Good Day biscuit","u":"pack","p":30,"al":"good day, biscuit","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P121","m":"ഏത്തക്ക ചിപ്സ്","e":"Banana chips","u":"250 g","p":100,"al":"kaya varuthath, banana chips","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P122","m":"മിക്സ്ചർ","e":"Mixture","u":"200 g","p":60,"al":"mixture","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P123","m":"മുറുക്ക്","e":"Murukku","u":"200 g","p":60,"al":"murukku","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P124","m":"ലേയ്സ് ചിപ്സ്","e":"Lays chips","u":"pack","p":20,"al":"lays, chips","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P125","m":"മാഗി ന്യൂഡിൽസ്","e":"Maggi noodles","u":"pack","p":14,"al":"maggi, noodles","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P126","m":"ഡയറി മിൽക്ക് ചോക്ലേറ്റ്","e":"Dairy Milk","u":"each","p":40,"al":"dairy milk, chocolate","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P127","m":"പപ്പടം","e":"Pappadam","u":"pack","p":45,"al":"pappadam, pappadom","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P128","m":"ജാം","e":"Jam","u":"500 g","p":175,"al":"jam","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P129","m":"ടൊമാറ്റോ സോസ്","e":"Tomato ketchup","u":"500 g","p":120,"al":"sauce, ketchup","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P130","m":"മാങ്ങ അച്ചാർ","e":"Mango pickle","u":"400 g","p":95,"al":"achar, pickle, manga achar","g":"ബേക്കറി / സ്നാക്ക്"},{"c":"P131","m":"കോള (2 ലിറ്റർ)","e":"Cola","u":"2 L","p":95,"al":"cola, coke, pepsi","g":"പാനീയം"},{"c":"P132","m":"ഫ്രൂട്ട് ജ്യൂസ്","e":"Fruit juice","u":"L","p":110,"al":"juice, frooti","g":"പാനീയം"},{"c":"P133","m":"കുടിവെള്ളം (1 ലിറ്റർ)","e":"Drinking water","u":"L","p":20,"al":"kudivellam, water bottle","g":"പാനീയം"},{"c":"P134","m":"സോഡ","e":"Soda","u":"750 ml","p":20,"al":"soda","g":"പാനീയം"},{"c":"P135","m":"കുളി സോപ്പ്","e":"Bath soap","u":"each","p":38,"al":"soap, kuli soap","g":"വീട്ടുസാധനം"},{"c":"P136","m":"ഷാംപൂ","e":"Shampoo","u":"180 ml","p":150,"al":"shampoo","g":"വീട്ടുസാധനം"},{"c":"P137","m":"ടൂത്ത്പേസ്റ്റ്","e":"Toothpaste","u":"150 g","p":95,"al":"toothpaste, colgate, paste","g":"വീട്ടുസാധനം"},{"c":"P138","m":"ടൂത്ത് ബ്രഷ്","e":"Toothbrush","u":"each","p":40,"al":"toothbrush, brush","g":"വീട്ടുസാധനം"},{"c":"P139","m":"അലക്ക് സോപ്പ്","e":"Washing soap","u":"each","p":20,"al":"alakku soap","g":"വീട്ടുസാധനം"},{"c":"P140","m":"അലക്ക് പൊടി","e":"Detergent powder","u":"kg","p":130,"al":"surf, ariel, detergent","g":"വീട്ടുസാധനം"},{"c":"P141","m":"ഡിഷ് വാഷ് ബാർ","e":"Dishwash bar","u":"each","p":25,"al":"vim bar, dishwash","g":"വീട്ടുസാധനം"},{"c":"P142","m":"ഡിഷ് വാഷ് ലിക്വിഡ്","e":"Dishwash liquid","u":"500 ml","p":105,"al":"vim liquid, dishwash liquid","g":"വീട്ടുസാധനം"},{"c":"P143","m":"ഫ്ലോർ ക്ലീനർ","e":"Floor cleaner","u":"500 ml","p":120,"al":"lizol, floor cleaner","g":"വീട്ടുസാധനം"},{"c":"P144","m":"ടോയ്‌ലറ്റ് ക്ലീനർ","e":"Toilet cleaner","u":"500 ml","p":105,"al":"harpic, toilet cleaner","g":"വീട്ടുസാധനം"},{"c":"P145","m":"ഹാൻഡ്‌വാഷ്","e":"Handwash","u":"200 ml","p":99,"al":"handwash","g":"വീട്ടുസാധനം"},{"c":"P146","m":"ടിഷ്യൂ പേപ്പർ","e":"Tissue paper","u":"pack","p":70,"al":"tissue","g":"വീട്ടുസാധനം"},{"c":"P147","m":"സാനിറ്ററി പാഡ്","e":"Sanitary pad","u":"pack","p":50,"al":"pad, sanitary pad","g":"വീട്ടുസാധനം"},{"c":"P148","m":"അഗർബത്തി","e":"Incense sticks","u":"pack","p":30,"al":"agarbathi, incense","g":"വീട്ടുസാധനം"},{"c":"P149","m":"തീപ്പെട്ടി","e":"Matchbox","u":"pack","p":12,"al":"theeppetti, matchbox","g":"വീട്ടുസാധനം"},{"c":"P150","m":"ഗ്യാസ് ലൈറ്റർ","e":"Gas lighter","u":"each","p":70,"al":"lighter","g":"വീട്ടുസാധനം"},{"c":"P151","m":"കൊതുക് തിരി","e":"Mosquito coil","u":"pack","p":38,"al":"kothuku thiri, mosquito coil","g":"വീട്ടുസാധനം"},{"c":"P152","m":"അലൂമിനിയം ഫോയിൽ","e":"Aluminium foil","u":"roll","p":90,"al":"foil, aluminium foil","g":"വീട്ടുസാധനം"}];
+/* a:false marks a product as not available today */
+var $=function(i){return document.getElementById(i)};
+function nrm(s){return String(s||'').toLowerCase().replace(/[^a-z0-9ഀ-ൿ ]/g,' ').replace(/\s+/g,' ').trim()}
+CATALOG.forEach(function(p){p.k=nrm(p.m+' '+p.e+' '+p.al);if(p.a===undefined)p.a=true;p.w=!!p.w});
+var cart={}, cat='എല്ലാം', cats=['എല്ലാം'];
+CATALOG.forEach(function(p){if(cats.indexOf(p.g)<0)cats.push(p.g)});
+try{var sv=JSON.parse(localStorage.getItem('ep_cart2')||'{}');if(sv&&typeof sv==='object')cart=sv}catch(e){}
+function save(){try{localStorage.setItem('ep_cart2',JSON.stringify(cart))}catch(e){}}
+function fq(n){return (Math.round(n*100)/100).toString()}
+function money(n){return '₹'+(Math.round(n*100)/100)}
+function price(p,n){return p.w?p.pk*n/1000:p.p*n}
+function qlabel(p,n){return p.w?(n>=1000?fq(n/1000)+' kg':n+' g'):fq(n)+' '+p.u}
+function unitTxt(p){return p.w?money(p.pk)+' / kg':money(p.p)+' / '+p.u}
+function nextQ(p,n,d){
+  if(!p.w){return Math.round((n+d)*100)/100}
+  var s=(d>0?(n<500):(n<=500))?50:250; return Math.max(0,n+d*s)
+}
+var openC=null;
+var QUICK=[50,100,250,500,1000];
+function byCode(c){for(var i=0;i<CATALOG.length;i++)if(CATALOG[i].c===c)return CATALOG[i];return null}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+function renderChips(){
+  $('chips').innerHTML=cats.map(function(c){return '<button type="button" class="chip" aria-pressed="'+(c===cat)+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join('');
+  Array.prototype.forEach.call($('chips').children,function(b){b.onclick=function(){cat=b.getAttribute('data-c');renderChips();renderList()}});
+}
+function renderList(){
+  var q=nrm($('q').value), parts=q?q.split(' '):[], out=[];
+  CATALOG.forEach(function(p){
+    if(cat!=='എല്ലാം'&&p.g!==cat)return;
+    var s=0,ok=true;
+    parts.forEach(function(t){var i=p.k.indexOf(t);if(i<0)ok=false;else s+=(i===0||p.k.charAt(i-1)===' ')?0:1});
+    if(ok)out.push({p:p,s:s});
+  });
+  if(q)out.sort(function(a,b){return a.s-b.s});
+  $('none').hidden=out.length>0;
+  $('list').innerHTML=out.map(function(o){var p=o.p,n=cart[p.c]||0;
+    var act=!p.a?'<button class="add" disabled>ഇന്ന് ഇല്ല</button>':
+      n?'<div class="step"><button type="button" data-d="-1" data-c="'+p.c+'" aria-label="കുറയ്ക്കുക">−</button><span>'+esc(qlabel(p,n))+'</span><button type="button" data-d="1" data-c="'+p.c+'" aria-label="കൂട്ടുക">+</button></div>':
+      (p.w?'<button class="add" type="button" data-open="'+p.c+'">ചേർക്കുക</button>':'<button class="add" type="button" data-d="1" data-c="'+p.c+'">ചേർക്കുക</button>');
+    var opts=(p.w&&!n&&openC===p.c)?'<div class="opts"><div class="lab">എത്ര വേണം?</div>'+QUICK.map(function(g){return '<button type="button" data-q="'+g+'" data-c="'+p.c+'">'+(g>=1000?'1 kg':g+' g')+'</button>'}).join('')+'</div>':'';
+    return '<li class="item'+(p.a?'':' off')+'"><div><div class="nm">'+esc(p.m)+' <span class="en">'+esc(p.e)+'</span></div><div class="pr">'+unitTxt(p)+'</div></div>'+act+opts+'</li>'}).join('');
+  var L=$('list');
+  Array.prototype.forEach.call(L.querySelectorAll('button[data-d]'),function(b){b.onclick=function(){bump(b.getAttribute('data-c'),+b.getAttribute('data-d'))}});
+  Array.prototype.forEach.call(L.querySelectorAll('button[data-open]'),function(b){b.onclick=function(){openC=b.getAttribute('data-open');renderList()}});
+  Array.prototype.forEach.call(L.querySelectorAll('button[data-q]'),function(b){b.onclick=function(){setQ(b.getAttribute('data-c'),+b.getAttribute('data-q'));openC=null;renderList()}});
+}
+function setQ(c,n){if(!(n>0))delete cart[c];else cart[c]=n;save();renderBar();if(!$('vCart').hidden)renderCart()}
+function bump(c,d){var p=byCode(c);if(!p)return;setQ(c,nextQ(p,cart[c]||0,d));renderList()}
+function totals(){var t=0,n=0;Object.keys(cart).forEach(function(c){var p=byCode(c);if(p){t+=price(p,cart[c]);n++}});return{t:t,n:n}}
+function renderBar(){var x=totals();$('goCart').disabled=!x.n;$('barL').textContent=x.n?('കാർട്ട് കാണുക ('+x.n+' ഇനം)'):'കാർട്ട് ശൂന്യം';$('barR').textContent=x.n?money(x.t):''}
+function lines(){var o=[],i=0;Object.keys(cart).forEach(function(c){var p=byCode(c);if(!p)return;i++;o.push(i+'. '+p.m+' ('+p.e+') – '+qlabel(p,cart[c])+' – '+money(price(p,cart[c])))});return o}
+function renderCart(){
+  var rows=Object.keys(cart).map(function(c){var p=byCode(c);if(!p)return'';return '<div class="row"><div style="min-width:0"><div class="nm">'+esc(p.m)+'</div><div class="pr">'+unitTxt(p)+'</div></div><div style="text-align:right"><div class="step"><button type="button" data-d="-1" data-c="'+c+'" aria-label="കുറയ്ക്കുക">−</button><span>'+esc(qlabel(p,cart[c]))+'</span><button type="button" data-d="1" data-c="'+c+'" aria-label="കൂട്ടുക">+</button></div>'+(p.w?'<div><input class="gin" type="number" inputmode="numeric" min="10" step="10" value="'+cart[c]+'" data-g="'+c+'" aria-label="ഗ്രാം"> <span class="pr">g</span></div>':'')+'<div class="pr">'+money(price(p,cart[c]))+'</div></div></div>'}).join('');
+  $('cartRows').innerHTML=rows||'<div class="empty">കാർട്ട് ശൂന്യം</div>';
+  Array.prototype.forEach.call($('cartRows').querySelectorAll('button[data-d]'),function(b){b.onclick=function(){bump(b.getAttribute('data-c'),+b.getAttribute('data-d'))}});
+  Array.prototype.forEach.call($('cartRows').querySelectorAll('input[data-g]'),function(i){i.onchange=function(){var g=Math.round(parseFloat(i.value)/10)*10;setQ(i.getAttribute('data-g'),g>0?g:0)}});
+  $('cartTot').textContent=money(totals().t);
+  buildMsg();
+}
+function phoneOk(){var d=$('ph').value.replace(/\D/g,'');if(d.length===12&&d.indexOf('91')===0)d=d.slice(2);return d.length===10?d:''}
+function buildMsg(){
+  var ph=phoneOk(),nm=$('nm').value.trim(),ad=$('ad').value.trim(),nt=$('nt').value.trim(),L=lines();
+  var m=SHOP_NAME+' – പുതിയ ഓർഡർ\n\nപേര്: '+(nm||'-')+'\nഫോൺ: '+(ph||$('ph').value.trim()||'-')+'\nവിലാസം: '+(ad||'-')+'\n\nസാധനങ്ങൾ:\n'+(L.join('\n')||'-')+'\n\nഏകദേശ ആകെ: '+money(totals().t)+' (തൂക്കം/വില അനുസരിച്ച് മാറാം)'+(nt?'\nകുറിപ്പ്: '+nt:'');
+  $('msg').textContent=m;
+  var err='';if(!L.length)err='കാർട്ടിൽ സാധനം ചേർക്കുക.';else if(!nm)err='പേര് നൽകുക.';else if(!ph)err='ശരിയായ 10 അക്ക ഫോൺ നമ്പർ നൽകുക.';else if(!ad)err='വിലാസം നൽകുക.';
+  $('err').textContent=(nm||ph||ad)?err:'';
+  var a=$('send');a.classList.toggle('disabled',!!err);a.setAttribute('aria-disabled',!!err);
+  a.href=err?'#':'https://wa.me/'+SHOP_WA+'?text='+encodeURIComponent(m);
+  try{localStorage.setItem('ep_cust',JSON.stringify({nm:$('nm').value,ph:$('ph').value,ad:$('ad').value}))}catch(e){}
+}
+function show(c){$('vShop').hidden=c;$('vCart').hidden=!c;$('bar').hidden=c;if(c)renderCart();window.scrollTo(0,0)}
+$('q').addEventListener('input',renderList);
+$('goCart').onclick=function(){show(true)};$('back').onclick=function(){show(false)};
+['nm','ph','ad','nt'].forEach(function(i){$(i).addEventListener('input',buildMsg)});
+$('copy').onclick=function(){var t=$('msg').textContent,b=$('copy');
+  function ok(){b.textContent='കോപ്പി ചെയ്തു ✓';setTimeout(function(){b.textContent='സന്ദേശം കോപ്പി ചെയ്യുക'},2000)}
+  function sel(){var r=document.createRange();r.selectNodeContents($('msg'));var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='സന്ദേശം തിരഞ്ഞെടുത്തു, കോപ്പി ചെയ്യുക'}
+  try{navigator.clipboard.writeText(t).then(ok,sel)}catch(e){sel()}};
+$('send').addEventListener('click',function(e){if($('send').classList.contains('disabled'))e.preventDefault()});
+$('shopNo').textContent='+'+SHOP_WA.slice(0,2)+' '+SHOP_WA.slice(2);
+try{var c=JSON.parse(localStorage.getItem('ep_cust')||'{}');['nm','ph','ad'].forEach(function(k){if(c[k])$(k).value=c[k]})}catch(e){}
+renderChips();renderList();renderBar();
+</script>
+
+</body></html>
